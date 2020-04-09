@@ -8,6 +8,8 @@
  ****************************************/
 
 #include "Ubidots.h"
+#include <OneWire.h>
+#include <DallasTemperature.h>
 
 /****************************************
  * Define Instances and Constants
