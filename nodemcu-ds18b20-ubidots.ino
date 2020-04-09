@@ -18,8 +18,19 @@ const char* WIFI_SSID = "Leydig";      // Put here your Wi-Fi SSID
 const char* WIFI_PASS = "94232607.";      // Put here your Wi-Fi password
 Ubidots ubidots(UBIDOTS_TOKEN);
 
-int i = -5;
-int j = 0;
+// Data wire is plugged into port D2 on the ESP8266
+#define ONE_WIRE_BUS D2
+
+// Setup a oneWire instance to communicate with any OneWire devices
+OneWire oneWire(ONE_WIRE_BUS);
+
+// Pass our oneWire reference to Dallas Temperature.
+DallasTemperature sensors(&oneWire);
+
+float tempSensor1, tempSensor2, tempSensor3;
+
+uint8_t sensor1[8] = { 0x28, 0x8E, 0x41, 0x94, 0x97, 0x0C, 0x03, 0xD1  };
+uint8_t sensor2[8] = { 0x28, 0x7D, 0x1E, 0x94, 0x97, 0x0C, 0x03, 0x00  };
 
 /****************************************
  * Auxiliar Functions
@@ -33,29 +44,22 @@ int j = 0;
 
 void setup() {
   Serial.begin(115200);
+  sensors.begin();
   ubidots.wifiConnect(WIFI_SSID, WIFI_PASS);
   // ubidots.setDebug(true);  // Uncomment this line for printing debug messages
 }
 
 void loop() {
 
-  int m1 = 1;
-  
-  i = i + random(-2, 5);
-  j = j + 1;
-
-  if(j%3==0){
-    if(m1==0){
-      m1 = 1;
-    }else{
-      m1 = 0;
-    }
-  }
+  sensors.requestTemperatures();
+  tempSensor1 = sensors.getTempC(sensor1); // Gets the values of the temperature
+  tempSensor2 = sensors.getTempC(sensor2); // Gets the values of the temperature
   
   // Publish values to 2 different data sources
   //ubidots.ubidotsPublish("nodemcu-1");
-  ubidots.add("ds18b20-1", i);
-  ubidots.add("maquina-1", m1);
+  ubidots.add("ds18b20-1", tempSensor1);
+  ubidots.add("ds18b20-2", tempSensor2);
+  //ubidots.add("maquina-1", m1);
   
   bool bufferSent = false;
   bufferSent = ubidots.send("nodemcu-1");  // Will send data to a device label that matches the device Id
