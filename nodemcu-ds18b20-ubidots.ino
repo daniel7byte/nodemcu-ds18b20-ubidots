@@ -23,6 +23,10 @@ Ubidots ubidots(UBIDOTS_TOKEN);
 // Data wire is plugged into port D2 on the ESP8266
 #define ONE_WIRE_BUS D2
 
+//Machines
+int MAQUINA_1 = 5; // D1(GPIO5)
+int MAQUINA_1_STATE = 0;
+
 // Setup a oneWire instance to communicate with any OneWire devices
 OneWire oneWire(ONE_WIRE_BUS);
 
@@ -49,6 +53,8 @@ void setup() {
   sensors.begin();
   ubidots.wifiConnect(WIFI_SSID, WIFI_PASS);
   // ubidots.setDebug(true);  // Uncomment this line for printing debug messages
+
+  pinMode(MAQUINA_1, INPUT);
 }
 
 void loop() {
@@ -61,8 +67,12 @@ void loop() {
   //ubidots.ubidotsPublish("nodemcu-1");
   ubidots.add("ds18b20-1", tempSensor1);
   ubidots.add("ds18b20-2", tempSensor2);
-  //ubidots.add("maquina-1", m1);
   
+  //Maquinaria
+  MAQUINA_1_STATE = digitalRead(MAQUINA_1); // put your main code here, to run repeatedly:
+  ubidots.add("maquina-1", MAQUINA_1_STATE);
+
+  // Envia la informacion
   bool bufferSent = false;
   bufferSent = ubidots.send("nodemcu-1");  // Will send data to a device label that matches the device Id
 
