@@ -15,9 +15,9 @@
  * Define Instances and Constants
  ****************************************/
 
-const char* UBIDOTS_TOKEN = "BBFF-ZVJ1tw9QLOB0heYmjpPYMC6tmdSKdT";  // Put here your Ubidots TOKEN
-const char* WIFI_SSID = "Leydig";      // Put here your Wi-Fi SSID
-const char* WIFI_PASS = "94232607.";      // Put here your Wi-Fi password
+const char* UBIDOTS_TOKEN = "BBFF-3OAVWFayCvNgy92Da4T1LqT2MZjZYG";  // Put here your Ubidots TOKEN
+const char* WIFI_SSID = "Varela Bernal";      // Put here your Wi-Fi SSID
+const char* WIFI_PASS = "Varela_123_2018";      // Put here your Wi-Fi password
 Ubidots ubidots(UBIDOTS_TOKEN);
 
 // Data wire is plugged into port D2 on the ESP8266
@@ -52,7 +52,7 @@ void setup() {
   Serial.begin(115200);
   sensors.begin();
   ubidots.wifiConnect(WIFI_SSID, WIFI_PASS);
-  // ubidots.setDebug(true);  // Uncomment this line for printing debug messages
+  ubidots.setDebug(true);  // Uncomment this line for printing debug messages
 
   pinMode(MAQUINA_1, INPUT);
 }
@@ -81,5 +81,5 @@ void loop() {
     Serial.println("Valores enviados al servidor");
   }
 
-  delay(1000);
+  delay(60000);
 }
